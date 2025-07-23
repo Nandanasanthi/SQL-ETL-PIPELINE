@@ -17,4 +17,4 @@ FROM staging_sales;
 
 -- Log to Audit Table
 INSERT INTO etl_audit_log (table_name, inserted_rows)
-VALUES ('production_sales', (SELECT COUNT(*) FROM prod5uction_sales));
+VALUES ('production_sales', (SELECT COUNT(*) FROM production_sales));
