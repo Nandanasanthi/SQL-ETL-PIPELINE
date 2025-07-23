@@ -1,0 +1,5 @@
+sale_id,customer_name,amount,sale_date
+1,John,120.50,2024-06-01
+2,Alice,210.00,2024-06-02
+4,Alice,210.00,2024-06-02
+5,John,120.50,2024-06-01

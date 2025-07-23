@@ -1,0 +1,38 @@
+BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "etl_audit_log" (
+	"log_id"	INTEGER,
+	"table_name"	TEXT,
+	"inserted_rows"	INTEGER,
+	"load_time"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY("log_id" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "production_sales" (
+	"sale_id"	INT,
+	"customer_name"	TEXT,
+	"amount"	TEXT,
+	"sale_date"	TEXT
+);
+CREATE TABLE IF NOT EXISTS "staging_sales" (
+	"sale_id"	INTEGER,
+	"customer_name"	TEXT,
+	"amount"	TEXT,
+	"sale_date"	TEXT
+);
+INSERT INTO "etl_audit_log" VALUES (1,'production_sales',4,'2025-07-12 14:45:19');
+INSERT INTO "production_sales" VALUES (1,'John','120.50','2024-06-01');
+INSERT INTO "production_sales" VALUES (2,'Alice','210.00','2024-06-02');
+INSERT INTO "production_sales" VALUES (4,'Alice','210.00','2024-06-02');
+INSERT INTO "production_sales" VALUES (5,'John','120.50','2024-06-01');
+INSERT INTO "staging_sales" VALUES (1,'John','120.50','2024-06-01');
+INSERT INTO "staging_sales" VALUES (2,'Alice','210.00','2024-06-02');
+INSERT INTO "staging_sales" VALUES (3,'Bob',NULL,'2024-06-03');
+INSERT INTO "staging_sales" VALUES (4,'Alice','210.00','2024-06-02');
+INSERT INTO "staging_sales" VALUES (5,'John','120.50','2024-06-01');
+INSERT INTO "staging_sales" VALUES (6,NULL,'310.00','2024-06-04');
+CREATE TRIGGER trg_after_insert_production_sales
+AFTER INSERT ON production_sales
+BEGIN
+    INSERT INTO etl_audit_log (table_name, inserted_rows)
+    VALUES ('production_sales', (SELECT COUNT(*) FROM production_sales));
+END;
+COMMIT;
